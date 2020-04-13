@@ -525,7 +525,7 @@ int VolumeManager::createAsec(const char *id, unsigned int numSectors, const cha
         if (usingExt4) {
             formatStatus = Ext4::format(dmDevice, numImgSectors, mountPoint);
         } else {
-            formatStatus = Fat::format(dmDevice, numImgSectors, 0);
+            formatStatus = -1;
         }
 
         if (formatStatus < 0) {

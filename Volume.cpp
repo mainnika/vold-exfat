@@ -273,11 +273,7 @@ int Volume::formatVol(bool wipe) {
 
     if (mDebug) {
         SLOGI("Formatting volume %s (%s)", getLabel(), devicePath);
-    }
-
-    if (Fat::format(devicePath, 0, wipe)) {
-        SLOGE("Failed to format (%s)", strerror(errno));
-        goto err;
+        SLOGI("Format volume not implemented %s (%s)", getLabel(), devicePath);
     }
 
     ret = 0;
@@ -423,24 +419,11 @@ int Volume::mountVol() {
         errno = 0;
         setState(Volume::State_Checking);
 
-        if (Fat::check(devicePath)) {
-            if (errno == ENODATA) {
-                SLOGW("%s does not contain a FAT filesystem\n", devicePath);
-                continue;
-            }
-            errno = EIO;
-            /* Badness - abort the mount */
-            SLOGE("%s failed FS checks (%s)", devicePath, strerror(errno));
-            setState(Volume::State_Idle);
-            return -1;
-        }
-
-        errno = 0;
         int gid;
 
         if (Fat::doMount(devicePath, getMountpoint(), false, false, false,
                 AID_MEDIA_RW, AID_MEDIA_RW, 0007, true)) {
-            SLOGE("%s failed to mount via VFAT (%s)\n", devicePath, strerror(errno));
+            SLOGE("%s failed to mount via exFAT (%s)\n", devicePath, strerror(errno));
             continue;
         }
 
